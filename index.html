@@ -310,9 +310,13 @@
             let isDetailSection = false;
             let currentTempRooms = [];
 
-            for (let line of lines) {
-                line = line.trim();
+            const bedRegex = /(?:เตียงเสริม|เสริมเตียง)/i;
+
+            // วนลูปเพื่อแกะห้องพัก
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i].trim();
                 if (line.includes('รายละเอียด:')) { isDetailSection = true; continue; }
+                
                 if (isDetailSection && /^\d+\s*\./.test(line)) {
                     let idType = null;
                     if (line.includes('Deluxe Queen') || line.includes('ดีลักซ์ เตียงใหญ่')) idType = 'dq';
@@ -321,20 +325,31 @@
                     else if (line.includes('Standard Twin') || line.includes('สแตนดาร์ด เตียงคู่')) idType = 'st';
 
                     if (idType) {
+                        // ดึงข้อมูลเช็กบรรทัดถัดไป (Lookahead) เพื่อดูว่าบรรทัดย่อย (เช่น └ พัก 2 ท่าน (+เตียงเสริม)) มีคำว่าเตียงเสริมหรือไม่
+                        let hasExtraBedFound = bedRegex.test(line); 
+                        
+                        if (i + 1 < lines.length) {
+                            let nextLine = lines[i + 1].trim();
+                            // หากบรรทัดถัดไปเป็นบรรทัดย่อย (ขึ้นต้นด้วยเครื่องหมายแจกแจง หรือมีสเปซเยื้อง) และมีคำว่าเตียงเสริม
+                            if ((nextLine.includes('└') || nextLine.includes('-') || nextLine.includes('พัก')) && bedRegex.test(nextLine)) {
+                                hasExtraBedFound = true;
+                            }
+                        }
+                        
                         const qtyMatch = line.match(/(\d+)\s*ห้อง/);
                         const repeatCount = qtyMatch ? parseInt(qtyMatch[1], 10) : 1;
-                        for (let k = 0; k < repeatCount; k++) { currentTempRooms.push({ originalType: idType, currentType: idType, hasExtraBed: false }); }
+                        
+                        for (let k = 0; k < repeatCount; k++) { 
+                            currentTempRooms.push({ 
+                                originalType: idType, 
+                                currentType: idType, 
+                                hasExtraBed: hasExtraBedFound 
+                            }); 
+                        }
                     }
                 }
             }
 
-            for (let line of lines) {
-                if (/^\d+\s*\./.test(line.trim()) && (line.includes('เตียงเสริม') || line.includes('เสริมเตียง'))) {
-                    const match = line.match(/(?:เตียงเสริม|เสริมเตียง)\s*(\d+)/) || line.match(/(\d+)\s*(?:เตียงเสริม|เสริมเตียง)/);
-                    const bedQty = match ? parseInt(match[1], 10) : 1;
-                    for (let b = 0; b < bedQty; b++) { if (currentTempRooms[b]) currentTempRooms[b].hasExtraBed = true; }
-                }
-            }
             if (currentTempRooms.length === 0) { alert('⚠️ ไม่พบรายละเอียดห้องพัก'); return; }
             parsedRoomsData = currentTempRooms;
             renderVisualRoomCards();
