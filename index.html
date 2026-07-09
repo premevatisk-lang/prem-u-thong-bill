@@ -31,12 +31,12 @@
                     </div>
 
                     <div class="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-slate-400 mb-2">
-                        <div class="py-1 text-rose-500">อา.</div>
+                        <div class="py-1 text-slate-500">อา.</div>
                         <div class="py-1">จ.</div>
                         <div class="py-1">อ.</div>
                         <div class="py-1">พ.</div>
                         <div class="py-1">พฤ.</div>
-                        <div class="py-1">ศ.</div>
+                        <div class="py-1 text-blue-600">ศ.</div>
                         <div class="py-1 text-blue-600">ส.</div>
                     </div>
                     <div id="calendar-days-container" class="grid grid-cols-7 gap-1.5">
@@ -47,7 +47,7 @@
                     <h3 class="text-xs font-bold text-slate-900 flex items-center gap-1.5">⚙️ ตั้งค่าราคาฐาน (ราคาเริ่มต้นระบบ)</h3>
                     
                     <div class="bg-slate-50/50 p-3 rounded-xl border border-slate-100">
-                        <div class="text-[11px] font-bold text-slate-600 mb-2 flex items-center gap-1">🟢 วันปกติ (จันทร์ - พฤหัสบดี)</div>
+                        <div class="text-[11px] font-bold text-slate-600 mb-2 flex items-center gap-1">🟢 วันปกติ (อาทิตย์ - พฤหัสบดี)</div>
                         <div class="grid grid-cols-5 gap-1.5 text-center text-[9px] font-bold text-slate-400 uppercase mb-1">
                             <div>Deluxe Queen</div><div>Deluxe Twin</div><div>Standard Queen</div><div>Standard Twin</div><div class="text-blue-600">เตียงเสริม</div>
                         </div>
@@ -61,7 +61,7 @@
                     </div>
 
                     <div class="bg-slate-50/50 p-3 rounded-xl border border-slate-100">
-                        <div class="text-[11px] font-bold text-blue-600 mb-2 flex items-center gap-1">🔵 วันสุดสัปดาห์ (ศุกร์ - เสาร์ - อาทิตย์)</div>
+                        <div class="text-[11px] font-bold text-blue-600 mb-2 flex items-center gap-1">🔵 วันสุดสัปดาห์ (ศุกร์ - เสาร์)</div>
                         <div class="grid grid-cols-5 gap-1.5 text-center text-[9px] font-bold text-slate-400 uppercase mb-1">
                             <div>Deluxe Queen</div><div>Deluxe Twin</div><div>Standard Queen</div><div>Standard Twin</div><div class="text-blue-600">เตียงเสริม</div>
                         </div>
@@ -197,8 +197,10 @@
             const dateKey = `${dateObj.getFullYear()}-${String(dateObj.getMonth()+1).padStart(2,'0')}-${String(dateObj.getDate()).padStart(2,'0')}`;
             const customData = localStorage.getItem(`w_custom_rate_${dateKey}`);
             if (customData) { return parseFloat(JSON.parse(customData)[type]); }
+            
             const dayOfWeek = dateObj.getDay(); 
-            const isWeekend = (dayOfWeek === 0 || dayOfWeek === 5 || dayOfWeek === 6);
+            const isWeekend = (dayOfWeek === 5 || dayOfWeek === 6);
+            
             return parseFloat(isWeekend ? localStorage.getItem(`w_base_we_${type}`) || document.getElementById(`base-weekend-${type}`).value : localStorage.getItem(`w_base_wd_${type}`) || document.getElementById(`base-weekday-${type}`).value);
         }
 
@@ -226,8 +228,8 @@
 
                 let dayBg = "bg-slate-50 border border-slate-100 hover:bg-slate-100";
                 let textStyle = "text-slate-800";
-                if (dayOfWeek === 0) { dayBg = "bg-rose-50/50 border border-rose-100 hover:bg-rose-100/80"; textStyle = "text-rose-600"; }
-                if (dayOfWeek === 6) { dayBg = "bg-blue-50/50 border border-blue-100 hover:bg-blue-100/80"; textStyle = "text-blue-600"; }
+                
+                if (dayOfWeek === 5 || dayOfWeek === 6) { dayBg = "bg-blue-50/50 border border-blue-100 hover:bg-blue-100/80"; textStyle = "text-blue-600"; }
                 if (hasCustomPrice) { dayBg = "bg-amber-50 border-2 border-amber-300 hover:bg-amber-100/80"; }
 
                 const dayBox = document.createElement('div');
@@ -272,7 +274,6 @@
 
         function parseThaiDate(dateStr) { if (!dateStr) return null; const parts = dateStr.trim().split('/'); if (parts.length !== 3) return null; return new Date(parts[2], parts[1] - 1, parts[0]); }
 
-        // ฟังก์ชันล้างการแสดงผลในส่วนถัดๆ ไปทั้งหมด (ซ่อนแผงควบคุมและใบเสร็จ)
         function clearDisplaySections() {
             const roomManagerBox = document.getElementById('room-manager-box');
             if (roomManagerBox) roomManagerBox.classList.add('hidden');
@@ -287,21 +288,11 @@
             rawReceiptText = "";
         }
 
-        // ดักจับ: ถ้าข้อมูลโดนลบจนเกลี้ยงกล่อง สั่งซ่อนและเคลียร์ระบบทันที
-        function checkEmptyText(value) {
-            if (!value.trim()) {
-                clearDisplaySections();
-            }
-        }
-
-        // ปุ่มรีเซ็ต: ล้างทั้งตัวหนังสือในกล่องและแผงด้านล่าง
-        function resetAllData() {
-            document.getElementById('booking-text').value = '';
-            clearDisplaySections();
-        }
+        function checkEmptyText(value) { if (!value.trim()) { clearDisplaySections(); } }
+        function resetAllData() { document.getElementById('booking-text').value = ''; clearDisplaySections(); }
 
         function parseAndLoadRoomManager() {
-            clearDisplaySections(); // ล้างระบบเดิมทันทีก่อนสแกนค่าใหม่
+            clearDisplaySections();
 
             const text = document.getElementById('booking-text').value;
             if (!text.trim()) return alert('กรุณาวางข้อความก่อนครับ');
@@ -454,18 +445,14 @@
                 let assignedFloor = roomTypesInfo[room.currentType].floor;
                 const info = roomTypesInfo[room.currentType];
 
-                // คิดราคาเตียงเสริมแบบแปรผันตามวันที่จองจริง
                 let extraBedPrice = 0;
                 let extraBedDetailsStr = "";
                 if (room.hasExtraBed) {
-                    stayDatesArray.forEach(dateObj => {
-                        extraBedPrice += getDayRate(dateObj, 'ex');
-                    });
+                    stayDatesArray.forEach(dateObj => { extraBedPrice += getDayRate(dateObj, 'ex'); });
                     totalPrice += extraBedPrice;
                     extraBedDetailsStr = `\n    └➕ เสริมเตียง: (+${extraBedPrice.toLocaleString()} บาท)`;
                 }
 
-                // การแสดงผลแบบ HTML บนหน้าเว็บ
                 roomDetailsHTML += `
                     <div class="border-b border-slate-100 pb-2 mb-2 last:border-0 last:pb-0 last:mb-0">
                         <div class="flex justify-between font-medium text-slate-900">
@@ -479,7 +466,6 @@
                     </div>
                 `;
 
-                // ข้อความสำหรับก๊อปปี้ไปส่งใน LINE
                 receiptDetailsText += `ห้องที่ ${index + 1}: ${info.name} (${assignedFloor})\n    [${ratesListStr}] = ${totalSingleRoomPrice.toLocaleString()} บาท${extraBedDetailsStr}\n`;
             });
 
@@ -487,7 +473,6 @@
             document.getElementById('res-total-price').innerText = totalPrice.toLocaleString();
             document.getElementById('result-box').classList.remove('hidden');
 
-            // จัดรูปแบบข้อความพิมพ์สรุปตอบกลับทางไลน์
             rawReceiptText = `✅ รายละเอียดการจองและสรุปยอดเงิน\n` +
                              `ชื่อผู้เข้าพัก: ${globalCustomerData.name}\n` +
                              `เบอร์โทรศัพท์: ${globalCustomerData.phone}\n` +
@@ -497,8 +482,7 @@
                              `----------------------------------------\n` +
                              `${receiptDetailsText}` +
                              `----------------------------------------\n` +
-                             `💰 ยอดชำระรวมสุทธิทั้งสิ้น: ${totalPrice.toLocaleString()} บาท\n` +
-                             `ขอบคุณที่ใช้บริการครับ @prem hotel`;
+                             `💰 ยอดชำระรวมสุทธิทั้งสิ้น: ${totalPrice.toLocaleString()} บาท`;
         }
 
         function copyReceiptToClipboard() {
@@ -512,9 +496,7 @@
                     copyBtn.innerText = originalText;
                     copyBtn.className = "bg-[#009656] hover:bg-[#007944] text-white text-xs font-medium py-2 px-4 rounded-lg cursor-pointer";
                 }, 2000);
-            }).catch(err => {
-                alert('ไม่สามารถคัดลอกข้อความได้อัตโนมัติ: ' + err);
-            });
+            }).catch(err => { alert('ไม่สามารถคัดลอกข้อความได้อัตโนมัติ: ' + err); });
         }
     </script>
 </body>
