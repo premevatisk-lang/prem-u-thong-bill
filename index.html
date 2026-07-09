@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบคำนวณค่าห้องพักและปฏิทินตั้งราคารายวัน</title>
-    <!-- Tailwind CSS สำหรับดีไซน์ Modern Clean -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,7 +15,6 @@
 <body class="bg-slate-50 text-slate-800 min-h-screen py-8 px-4">
 
     <div class="max-w-7xl mx-auto">
-        <!-- Header -->
         <header class="mb-8 text-center">
             <h1 class="text-2xl font-bold text-slate-900 tracking-wide">ระบบสรุปบิลและปฏิทินตั้งราคารายห้อง</h1>
             <p class="text-sm text-slate-500 mt-1">ตั้งราคาเจาะจงรายวันบนปฏิทินได้อิสระ รองรับวันหยุดและวันอีเวนต์พิเศษ</p>
@@ -24,7 +22,6 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
-            <!-- 📅 ฝั่งซ้าย: ปฏิทินรายเดือนสำหรับตั้งราคา (ปรับเป็นชื่อเต็มเรียบร้อย) -->
             <div class="bg-white p-5 rounded-2xl shadow-xs border border-slate-100 lg:col-span-5 space-y-6">
                 <div>
                     <div class="flex items-center justify-between mb-4">
@@ -33,7 +30,6 @@
                         <button onclick="changeMonth(1)" class="p-2 hover:bg-slate-100 rounded-lg text-slate-600 transition-colors cursor-pointer font-bold">❯</button>
                     </div>
 
-                    <!-- ตารางปฏิทิน -->
                     <div class="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-slate-400 mb-2">
                         <div class="py-1 text-rose-500">อา.</div>
                         <div class="py-1">จ.</div>
@@ -44,15 +40,12 @@
                         <div class="py-1 text-blue-600">ส.</div>
                     </div>
                     <div id="calendar-days-container" class="grid grid-cols-7 gap-1.5">
-                        <!-- วันที่ในปฏิทินจะถูกวาดตรงนี้ด้วย JS -->
-                    </div>
+                        </div>
                 </div>
 
-                <!-- ⚙️ ตั้งค่าราคาฐานเริ่มต้น -->
                 <div class="pt-4 border-t border-slate-100 space-y-4">
                     <h3 class="text-xs font-bold text-slate-900 flex items-center gap-1.5">⚙️ ตั้งค่าราคาฐาน (ราคาเริ่มต้นระบบ)</h3>
                     
-                    <!-- กลุ่มวันจันทร์ - พฤหัสบดี -->
                     <div class="bg-slate-50/50 p-3 rounded-xl border border-slate-100">
                         <div class="text-[11px] font-bold text-slate-600 mb-2 flex items-center gap-1">🟢 วันปกติ (จันทร์ - พฤหัสบดี)</div>
                         <div class="grid grid-cols-5 gap-1.5 text-center text-[9px] font-bold text-slate-400 uppercase mb-1">
@@ -67,7 +60,6 @@
                         </div>
                     </div>
 
-                    <!-- กลุ่มวันศุกร์ - อาทิตย์ -->
                     <div class="bg-slate-50/50 p-3 rounded-xl border border-slate-100">
                         <div class="text-[11px] font-bold text-blue-600 mb-2 flex items-center gap-1">🔵 วันสุดสัปดาห์ (ศุกร์ - เสาร์ - อาทิตย์)</div>
                         <div class="grid grid-cols-5 gap-1.5 text-center text-[9px] font-bold text-slate-400 uppercase mb-1">
@@ -84,18 +76,21 @@
                 </div>
             </div>
 
-            <!-- ฝั่งขวา: สแกนข้อความและแสดงผลลัพธ์ใบเสร็จ -->
             <div class="lg:col-span-7 space-y-6">
-                <!-- กล่องใส่ข้อความต้นฉบับ -->
                 <div class="bg-white p-6 rounded-2xl shadow-xs border border-slate-100">
                     <label for="booking-text" class="block text-sm font-semibold text-slate-900 mb-2">📋 วางข้อความจองห้องพักจาก LINE</label>
-                    <textarea id="booking-text" rows="4" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors font-mono text-sm" placeholder="วางรายละเอียดการจอง..."></textarea>
-                    <button onclick="parseAndLoadRoomManager()" class="w-full mt-3 bg-slate-900 hover:bg-slate-800 text-white font-medium py-3 px-4 rounded-xl transition-colors cursor-pointer text-center">
-                        🔍 ตรวจสอบและโหลดรายการห้องพักเพื่อปรับแต่ง
-                    </button>
+                    <textarea id="booking-text" rows="4" oninput="checkEmptyText(this.value)" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors font-mono text-sm" placeholder="วางรายละเอียดการจอง..."></textarea>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 mt-3">
+                        <button onclick="parseAndLoadRoomManager()" class="sm:col-span-3 bg-slate-900 hover:bg-slate-800 text-white font-medium py-3 px-4 rounded-xl transition-colors cursor-pointer text-center">
+                            🔍 ตรวจสอบและโหลดรายการห้องพักเพื่อปรับแต่ง
+                        </button>
+                        <button onclick="resetAllData()" class="sm:col-span-1 bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold py-3 px-4 rounded-xl transition-colors cursor-pointer text-center border border-rose-200">
+                            🧹 รีเซ็ต
+                        </button>
+                    </div>
                 </div>
 
-                <!-- ⚙️ แผงควบคุมรายห้อง -->
                 <div id="room-manager-box" class="hidden bg-white p-5 rounded-2xl border border-slate-200 shadow-xs transition-all">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 pb-3 border-b border-slate-100 gap-2">
                         <h3 class="text-sm font-bold text-slate-900">🛠️ รายการห้องพักที่ตรวจพบ (ระบบระบุชั้นอัตโนมัติตามระดับห้อง)</h3>
@@ -105,7 +100,6 @@
                     <button id="submit-calc-btn" onclick="calculateFinalReceipt()" class="w-full mt-6 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3.5 px-4 rounded-xl transition-colors cursor-pointer text-center">📊 คำนวณเงินและออกใบเสร็จตามราคาปฏิทิน</button>
                 </div>
 
-                <!-- 🟢 ผลลัพธ์ใบเสร็จรับเงิน (เพิ่มจำนวนห้องเรียบร้อย) -->
                 <div id="result-box" class="hidden bg-white p-6 rounded-2xl border-2 border-[#00b060] transition-all">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-[17px] font-bold text-[#007944]">✅ รายละเอียดการคำนวณยอดเงินเรียบร้อย</h3>
@@ -118,7 +112,6 @@
                         <div>วันเช็คอิน: <span id="res-checkin" class="font-semibold text-slate-900 ml-1">-</span></div>
                         <div>วันเช็คเอาท์: <span id="res-checkout" class="font-semibold text-slate-900 ml-1">-</span></div>
                         <div>จำนวนคืนที่เข้าพัก: <span id="res-nights" class="font-semibold text-blue-600 ml-1">-</span></div>
-                        <!-- เพิ่มข้อมูลจำนวนห้องตามข้อ 4 -->
                         <div>จำนวนห้องพักที่จอง: <span id="res-rooms-count" class="font-semibold text-purple-700 ml-1">-</span></div>
                     </div>
 
@@ -136,7 +129,6 @@
         </div>
     </div>
 
-    <!-- 🛠️ Modal Pop-up สำหรับตั้งราคาอีเวนต์รายวัน -->
     <div id="price-modal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl border border-slate-100">
             <h3 class="text-base font-bold text-slate-900 mb-1">📅 ปรับแต่งราคาเฉพาะวัน</h3>
@@ -212,7 +204,6 @@
 
         function changeMonth(direction) { currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction); renderCalendar(); }
 
-        // ปรับปรุงส่วนแสดงชื่อเต็มบนตารางปฏิทินช่องรายวัน (ข้อ 3)
         function renderCalendar() {
             const year = currentCalendarDate.getFullYear();
             const month = currentCalendarDate.getMonth();
@@ -243,7 +234,6 @@
                 dayBox.className = `${dayBg} p-2 rounded-xl cursor-pointer transition-all flex flex-col justify-between min-h-[95px] relative`;
                 dayBox.onclick = () => openPriceModal(dateKey, day, month, year);
 
-                // ปรับแสดงผลเป็น Full Name แบบกะทัดรัด ตัวหนังสือเล็กลงพอดีกล่อง
                 dayBox.innerHTML = `
                     <div class="w-full flex justify-between items-center mb-1">
                         <span class="font-bold text-[13px] ${textStyle}">${day}</span>
@@ -282,7 +272,37 @@
 
         function parseThaiDate(dateStr) { if (!dateStr) return null; const parts = dateStr.trim().split('/'); if (parts.length !== 3) return null; return new Date(parts[2], parts[1] - 1, parts[0]); }
 
+        // ฟังก์ชันล้างการแสดงผลในส่วนถัดๆ ไปทั้งหมด (ซ่อนแผงควบคุมและใบเสร็จ)
+        function clearDisplaySections() {
+            const roomManagerBox = document.getElementById('room-manager-box');
+            if (roomManagerBox) roomManagerBox.classList.add('hidden');
+            const roomCardsContainer = document.getElementById('room-cards-container');
+            if (roomCardsContainer) roomCardsContainer.innerHTML = '';
+
+            const resultBox = document.getElementById('result-box');
+            if (resultBox) resultBox.classList.add('hidden');
+            
+            parsedRoomsData = [];
+            globalCustomerData = {};
+            rawReceiptText = "";
+        }
+
+        // ดักจับ: ถ้าข้อมูลโดนลบจนเกลี้ยงกล่อง สั่งซ่อนและเคลียร์ระบบทันที
+        function checkEmptyText(value) {
+            if (!value.trim()) {
+                clearDisplaySections();
+            }
+        }
+
+        // ปุ่มรีเซ็ต: ล้างทั้งตัวหนังสือในกล่องและแผงด้านล่าง
+        function resetAllData() {
+            document.getElementById('booking-text').value = '';
+            clearDisplaySections();
+        }
+
         function parseAndLoadRoomManager() {
+            clearDisplaySections(); // ล้างระบบเดิมทันทีก่อนสแกนค่าใหม่
+
             const text = document.getElementById('booking-text').value;
             if (!text.trim()) return alert('กรุณาวางข้อความก่อนครับ');
             if (!text.includes('ชื่อ:') || !text.includes('โทร:') || !text.includes('เช็คอิน:') || !text.includes('เช็คเอาท์:')) { alert('❌ รูปแบบข้อความไม่ถูกต้อง'); return; }
@@ -407,14 +427,14 @@
             let stayDatesArray = [];
             while (currentDate < dateOut) { stayDatesArray.push(new Date(currentDate)); currentDate.setDate(currentDate.getDate() + 1); }
             const totalNights = stayDatesArray.length;
-            const totalRoomsCount = parsedRoomsData.length; // นับจำนวนห้องรวมทั้งหมด
+            const totalRoomsCount = parsedRoomsData.length;
 
             document.getElementById('res-name').innerText = globalCustomerData.name;
             document.getElementById('res-phone').innerText = globalCustomerData.phone;
             document.getElementById('res-checkin').innerText = globalCustomerData.checkin;
             document.getElementById('res-checkout').innerText = globalCustomerData.checkout;
             document.getElementById('res-nights').innerText = `${totalNights} คืน`;
-            document.getElementById('res-rooms-count').innerText = `${totalRoomsCount} ห้อง`; // ส่งลง UI ข้อ 4
+            document.getElementById('res-rooms-count').innerText = `${totalRoomsCount} ห้อง`;
 
             let roomDetailsHTML = '';
             let totalPrice = 0;
@@ -432,72 +452,68 @@
                 totalPrice += totalSingleRoomPrice;
                 const ratesListStr = roomRatesArray.join(' + ');
                 let assignedFloor = roomTypesInfo[room.currentType].floor;
+                const info = roomTypesInfo[room.currentType];
 
-                roomDetailsHTML += `
-                    <div class="font-semibold text-slate-700 border-b border-slate-200 pb-1 mt-2 flex items-center justify-between">
-                        <span>🏨 <span class="text-blue-600 font-bold">[ห้องที่ ${index + 1}]</span> ${roomTypesInfo[room.currentType].name} (${assignedFloor})</span>
-                    </div>
-                    <div class="flex justify-between items-center text-xs pl-2 py-0.5 text-slate-600">
-                        <span>🌙 พักทั้งหมด ${totalNights} คืน (คืนละ ${ratesListStr} บาท)</span>
-                        <span class="font-mono font-bold text-slate-900">${totalSingleRoomPrice.toLocaleString()} บาท</span>
-                    </div>`;
-                
-                receiptDetailsText += `🏨 [ห้องที่ ${index + 1}] ${roomTypesInfo[room.currentType].name} (${assignedFloor})\n`;
-                receiptDetailsText += `   🌙 พักทั้งหมด ${totalNights} คืน (คืนละ ${ratesListStr} บาท)    ยอดรวม ${totalSingleRoomPrice.toLocaleString()} บาท\n\n`;
-
+                // คิดราคาเตียงเสริมแบบแปรผันตามวันที่จองจริง
+                let extraBedPrice = 0;
+                let extraBedDetailsStr = "";
                 if (room.hasExtraBed) {
-                    let bedRatesArray = [];
-                    let totalSingleBedPrice = 0;
                     stayDatesArray.forEach(dateObj => {
-                        const bedRateVal = getDayRate(dateObj, 'ex');
-                        totalSingleBedPrice += bedRateVal;
-                        bedRatesArray.push(bedRateVal.toLocaleString());
+                        extraBedPrice += getDayRate(dateObj, 'ex');
                     });
-                    totalPrice += totalSingleBedPrice;
-                    const bedRatesListStr = bedRatesArray.join(' + ');
-
-                    roomDetailsHTML += `
-                        <div class="flex justify-between items-center text-xs pl-6 py-1 bg-blue-50/40 text-blue-800 rounded-md">
-                            <span>➕ บริการเสริม: พ่วงเตียงเสริม 1 ชุด (คืนละ ${bedRatesListStr} บาท)</span>
-                            <span class="font-mono font-bold">${totalSingleBedPrice.toLocaleString()} บาท</span>
-                        </div>`;
-                    
-                    receiptDetailsText += `   ➕ บริการเสริม: พ่วงเตียงเสริม 1 ชุด (คืนละ ${bedRatesListStr} บาท)   ยอดรวม ${totalSingleBedPrice.toLocaleString()} บาท\n\n`;
+                    totalPrice += extraBedPrice;
+                    extraBedDetailsStr = `\n    └➕ เสริมเตียง: (+${extraBedPrice.toLocaleString()} บาท)`;
                 }
+
+                // การแสดงผลแบบ HTML บนหน้าเว็บ
+                roomDetailsHTML += `
+                    <div class="border-b border-slate-100 pb-2 mb-2 last:border-0 last:pb-0 last:mb-0">
+                        <div class="flex justify-between font-medium text-slate-900">
+                            <span>ห้องที่ ${index + 1}: ${info.name} (${assignedFloor})</span>
+                            <span class="font-mono">${(totalSingleRoomPrice + extraBedPrice).toLocaleString()} บาท</span>
+                        </div>
+                        <div class="text-xs text-slate-500 mt-0.5">
+                            ราคาแต่ละคืน: [${ratesListStr}]
+                            ${room.hasExtraBed ? `<span class="text-blue-600 block mt-0.5">➕ รวมเตียงเสริมเรียบร้อยแล้ว</span>` : ''}
+                        </div>
+                    </div>
+                `;
+
+                // ข้อความสำหรับก๊อปปี้ไปส่งใน LINE
+                receiptDetailsText += `ห้องที่ ${index + 1}: ${info.name} (${assignedFloor})\n    [${ratesListStr}] = ${totalSingleRoomPrice.toLocaleString()} บาท${extraBedDetailsStr}\n`;
             });
 
             document.getElementById('res-room-details').innerHTML = roomDetailsHTML;
             document.getElementById('res-total-price').innerText = totalPrice.toLocaleString();
-
-            // เพิ่มบรรทัดจำนวนห้องพักในข้อความดิบสำหรับก๊อปปี้ส่ง LINE (ข้อ 4)
-            rawReceiptText = `------------------------------------------
-👤 ชื่อผู้เข้าพัก: ${globalCustomerData.name}
-📞 เบอร์โทรศัพท์: ${globalCustomerData.phone}
-📅 วันเช็คอิน: ${globalCustomerData.checkin}
-📅 วันเช็คเอาท์: ${globalCustomerData.checkout}
-🌙 จำนวนคืนที่เข้าพัก: ${totalNights} คืน
-🏨 จำนวนห้องพักที่จอง: ${totalRoomsCount} ห้อง
-------------------------------------------
-📊 รายละเอียดค่าบริการ:
-
-${receiptDetailsText.trimEnd()}
-------------------------------------------
-💵 ยอดชำระรวมสุทธิ ทั้งสิ้น
-💰 [ ${totalPrice.toLocaleString()} บาท ]
-------------------------------------------
-ทางโรงแรมยินดีต้อนรับและขอบพระคุณที่เลือกใช้บริการครับ 🙏✨`;
-
             document.getElementById('result-box').classList.remove('hidden');
-            document.getElementById('result-box').scrollIntoView({ behavior: 'smooth' });
-            document.getElementById('copy-btn').innerText = "📋 คัดลอกข้อความใบเสร็จ";
+
+            // จัดรูปแบบข้อความพิมพ์สรุปตอบกลับทางไลน์
+            rawReceiptText = `✅ รายละเอียดการจองและสรุปยอดเงิน\n` +
+                             `ชื่อผู้เข้าพัก: ${globalCustomerData.name}\n` +
+                             `เบอร์โทรศัพท์: ${globalCustomerData.phone}\n` +
+                             `วันเช็คอิน: ${globalCustomerData.checkin}\n` +
+                             `วันเช็คเอาท์: ${globalCustomerData.checkout}\n` +
+                             `จำนวน: ${totalNights} คืน | ทั้งหมด: ${totalRoomsCount} ห้อง\n` +
+                             `----------------------------------------\n` +
+                             `${receiptDetailsText}` +
+                             `----------------------------------------\n` +
+                             `💰 ยอดชำระรวมสุทธิทั้งสิ้น: ${totalPrice.toLocaleString()} บาท\n` +
+                             `ขอบคุณที่ใช้บริการครับ @prem hotel`;
         }
 
         function copyReceiptToClipboard() {
             if (!rawReceiptText) return;
             navigator.clipboard.writeText(rawReceiptText).then(() => {
-                const btn = document.getElementById('copy-btn');
-                btn.innerText = "✅ คัดลอกสำเร็จ!";
-                setTimeout(() => { btn.innerText = "📋 คัดลอกข้อความใบเสร็จ"; }, 3000);
+                const copyBtn = document.getElementById('copy-btn');
+                const originalText = copyBtn.innerText;
+                copyBtn.innerText = "📋 คัดลอกสำเร็จ!";
+                copyBtn.className = "bg-emerald-700 text-white text-xs font-medium py-2 px-4 rounded-lg cursor-pointer";
+                setTimeout(() => {
+                    copyBtn.innerText = originalText;
+                    copyBtn.className = "bg-[#009656] hover:bg-[#007944] text-white text-xs font-medium py-2 px-4 rounded-lg cursor-pointer";
+                }, 2000);
+            }).catch(err => {
+                alert('ไม่สามารถคัดลอกข้อความได้อัตโนมัติ: ' + err);
             });
         }
     </script>
