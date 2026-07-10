@@ -122,12 +122,12 @@
                     </div>
 
                     <div class="bg-[#ebfbf2] border border-[#c6f6d5] p-5 rounded-xl text-center">
-                        <span class="text-[13px] font-bold text-[#234e52] block mb-1">ยอดชำระรวมสุทธิ ทั้งสิ้น</span>
+                        <span class="text-[13px] font-bold text-[#234e52] block mb-1">ยอดชำระรวม</span>
                         <div class="text-[32px] font-bold text-[#009656]"><span id="res-total-price">0</span> บาท</div>
                     </div>
 
                     <div class="mt-5 bg-amber-50 border border-amber-200 rounded-xl p-4 text-center">
-                        <p class="text-[13px] text-amber-800 leading-relaxed">🙏 กรุณาตรวจสอบรายละเอียดการจองและยอดชำระข้างต้นให้ถูกต้องเรียบร้อยก่อนทำการชำระเงินนะคะ/ครับ<br>หากพบข้อมูลผิดพลาดหรือมีข้อสงสัย กรุณาแจ้งเจ้าหน้าที่ก่อนโอนเงินค่ะ/ครับ</p>
+                        <p class="text-[13px] text-amber-800 leading-relaxed">🙏 กรุณาตรวจสอบรายละเอียดให้ถูกต้องก่อนชำระเงินครับ หากพบข้อผิดพลาดกรุณาแจ้งเจ้าหน้าที่ครับ</p>
                     </div>
                 </div>
             </div>
@@ -521,9 +521,8 @@
                              `----------------------------------------\n` +
                              `${receiptDetailsText}` +
                              `----------------------------------------\n` +
-                             `💰 ยอดชำระรวมสุทธิทั้งสิ้น: ${totalPrice.toLocaleString()} บาท\n\n` +
-                             `🙏 กรุณาตรวจสอบรายละเอียดการจองและยอดชำระข้างต้นให้ถูกต้องเรียบร้อยก่อนทำการชำระเงินนะคะ/ครับ\n` +
-                             `หากพบข้อมูลผิดพลาดหรือมีข้อสงสัย กรุณาแจ้งเจ้าหน้าที่ก่อนโอนเงินค่ะ/ครับ`;
+                             `💰 ยอดชำระรวม: ${totalPrice.toLocaleString()} บาท\n\n` +
+                             `🙏 กรุณาตรวจสอบรายละเอียดให้ถูกต้องก่อนชำระเงินครับ หากพบข้อผิดพลาดกรุณาแจ้งเจ้าหน้าที่ครับ`;
         }
 
         function copyReceiptToClipboard() {
