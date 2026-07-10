@@ -97,7 +97,8 @@
                         <div id="quota-warning-badge" class="hidden text-[11px] bg-rose-100 text-rose-800 py-1.5 px-3 rounded-md font-bold border border-rose-200 text-center animate-pulse">⚠️ ห้อง Deluxe Twin เกิน 2 ห้อง! ระบบล็อกชั่วคราว</div>
                     </div>
                     <div id="room-cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-                    <button id="submit-calc-btn" onclick="calculateFinalReceipt()" class="w-full mt-6 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3.5 px-4 rounded-xl transition-colors cursor-pointer text-center">📊 คำนวณเงินและออกใบเสร็จตามราคาปฏิทิน</button>
+                    <button type="button" onclick="addNewRoom()" class="w-full mt-4 bg-white hover:bg-slate-50 text-slate-700 font-semibold py-3 px-4 rounded-xl transition-colors cursor-pointer text-center border-2 border-dashed border-slate-300">➕ เพิ่มห้องพัก</button>
+                    <button id="submit-calc-btn" onclick="calculateFinalReceipt()" class="w-full mt-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3.5 px-4 rounded-xl transition-colors cursor-pointer text-center">📊 คำนวณเงินและออกใบเสร็จตามราคาปฏิทิน</button>
                 </div>
 
                 <div id="result-box" class="hidden bg-white p-6 rounded-2xl border-2 border-[#00b060] transition-all">
@@ -123,6 +124,10 @@
                     <div class="bg-[#ebfbf2] border border-[#c6f6d5] p-5 rounded-xl text-center">
                         <span class="text-[13px] font-bold text-[#234e52] block mb-1">ยอดชำระรวมสุทธิ ทั้งสิ้น</span>
                         <div class="text-[32px] font-bold text-[#009656]"><span id="res-total-price">0</span> บาท</div>
+                    </div>
+
+                    <div class="mt-5 bg-amber-50 border border-amber-200 rounded-xl p-4 text-center">
+                        <p class="text-[13px] text-amber-800 leading-relaxed">🙏 กรุณาตรวจสอบรายละเอียดการจองและยอดชำระข้างต้นให้ถูกต้องเรียบร้อยก่อนทำการชำระเงินนะคะ/ครับ<br>หากพบข้อมูลผิดพลาดหรือมีข้อสงสัย กรุณาแจ้งเจ้าหน้าที่ก่อนโอนเงินค่ะ/ครับ</p>
                     </div>
                 </div>
             </div>
@@ -355,6 +360,17 @@
             renderVisualRoomCards();
         }
 
+        function addNewRoom() {
+            parsedRoomsData.push({ originalType: 'sq', currentType: 'sq', hasExtraBed: false });
+            document.getElementById('room-manager-box').classList.remove('hidden');
+            renderVisualRoomCards();
+        }
+
+        function removeRoomCard(index) {
+            parsedRoomsData.splice(index, 1);
+            renderVisualRoomCards();
+        }
+
         function renderVisualRoomCards() {
             const container = document.getElementById('room-cards-container');
             container.innerHTML = '';
@@ -365,11 +381,15 @@
 
             if (totalDtActive > 2) {
                 warningBadge.classList.remove('hidden'); submitBtn.disabled = true;
-                submitBtn.className = "w-full mt-6 bg-slate-300 text-slate-500 font-semibold py-3.5 px-4 rounded-xl cursor-not-allowed text-center";
+                submitBtn.className = "w-full mt-3 bg-slate-300 text-slate-500 font-semibold py-3.5 px-4 rounded-xl cursor-not-allowed text-center";
                 submitBtn.innerText = `⛔ ออกบิลไม่ได้: เกินสิทธิ์ 2 ห้อง`;
+            } else if (parsedRoomsData.length === 0) {
+                warningBadge.classList.add('hidden'); submitBtn.disabled = true;
+                submitBtn.className = "w-full mt-3 bg-slate-300 text-slate-500 font-semibold py-3.5 px-4 rounded-xl cursor-not-allowed text-center";
+                submitBtn.innerText = "⛔ กรุณาเพิ่มห้องพักอย่างน้อย 1 ห้อง";
             } else {
                 warningBadge.classList.add('hidden'); submitBtn.disabled = false;
-                submitBtn.className = "w-full mt-6 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3.5 px-4 rounded-xl cursor-pointer text-center";
+                submitBtn.className = "w-full mt-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3.5 px-4 rounded-xl cursor-pointer text-center";
                 submitBtn.innerText = "📊 คำนวณเงินและออกใบเสร็จตามราคาปฏิทิน";
             }
 
@@ -381,7 +401,10 @@
                     <div>
                         <div class="flex justify-between items-center mb-2.5">
                             <span class="bg-slate-900 text-white text-[11px] px-2 py-0.5 rounded-md">ห้องที่ ${index + 1}</span>
-                            <span class="text-[11px] font-bold border px-2 py-0.5 rounded bg-white">📍 ล็อก: ${info.floor}</span>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-[11px] font-bold border px-2 py-0.5 rounded bg-white">📍 ล็อก: ${info.floor}</span>
+                                <button type="button" onclick="removeRoomCard(${index})" title="ลบห้องนี้" class="w-5 h-5 flex items-center justify-center rounded-full bg-rose-100 hover:bg-rose-200 text-rose-600 text-[11px] font-bold cursor-pointer">✕</button>
+                            </div>
                         </div>
                         <div class="mb-3.5"><div class="text-[13.5px] font-bold text-slate-900">${info.name}</div></div>
                         <div class="space-y-1.5 mb-2.5">
@@ -425,6 +448,7 @@
         function toggleCardExtraBed(index, isChecked) { parsedRoomsData[index].hasExtraBed = isChecked; }
 
         function calculateFinalReceipt() {
+            if (parsedRoomsData.length === 0) { alert('กรุณาเพิ่มห้องพักอย่างน้อย 1 ห้อง'); return; }
             const dateIn = parseThaiDate(globalCustomerData.checkin);
             const dateOut = parseThaiDate(globalCustomerData.checkout);
             if (!dateIn || !dateOut || dateOut <= dateIn) { alert('วันที่ไม่ถูกต้อง'); return; }
@@ -497,7 +521,9 @@
                              `----------------------------------------\n` +
                              `${receiptDetailsText}` +
                              `----------------------------------------\n` +
-                             `💰 ยอดชำระรวมสุทธิทั้งสิ้น: ${totalPrice.toLocaleString()} บาท`;
+                             `💰 ยอดชำระรวมสุทธิทั้งสิ้น: ${totalPrice.toLocaleString()} บาท\n\n` +
+                             `🙏 กรุณาตรวจสอบรายละเอียดการจองและยอดชำระข้างต้นให้ถูกต้องเรียบร้อยก่อนทำการชำระเงินนะคะ/ครับ\n` +
+                             `หากพบข้อมูลผิดพลาดหรือมีข้อสงสัย กรุณาแจ้งเจ้าหน้าที่ก่อนโอนเงินค่ะ/ครับ`;
         }
 
         function copyReceiptToClipboard() {
